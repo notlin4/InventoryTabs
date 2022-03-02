@@ -31,7 +31,7 @@
   "accessWidener": "inventorytabs.accesswidener",
   "depends": {
     "fabricloader": ">=0.11.6",
-    "fabric": ">=0.37.0",
-    "minecraft": "1.18.x"
+    "fabric": ">=0.46.5+1.19_experimental",
+    "minecraft": "1.19.x"
   }
 }
