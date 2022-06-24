@@ -3,7 +3,6 @@ package com.kqp.inventorytabs.tabs.tab;
 import java.util.Objects;
 
 import com.kqp.inventorytabs.init.InventoryTabs;
-import com.kqp.inventorytabs.tabs.provider.BlockTabProvider;
 import com.kqp.inventorytabs.util.BlockUtil;
 
 import net.minecraft.block.entity.BlockEntity;
@@ -44,13 +43,13 @@ public class SimpleBlockTab extends Tab {
         if (InventoryTabs.getConfig().doSightChecksFlag) {
             hitResult = BlockUtil.getLineOfSight(blockPos, client.player, 5D);
         } else {
-            hitResult = new BlockHitResult(client.player.getPos(), Direction.EAST, blockPos, false);
+            hitResult = new BlockHitResult(Vec3d.ofCenter(blockPos), Direction.EAST, blockPos, false);
         }
 
         if (hitResult != null) {
             if (InventoryTabs.getConfig().rotatePlayer) {
                 MinecraftClient.getInstance().player.lookAt(EntityAnchorArgumentType.EntityAnchor.EYES,
-                        getBlockVec3d());
+                        Vec3d.ofCenter(blockPos));
             }
 
             MinecraftClient.getInstance().interactionManager.interactBlock(client.player, client.player.clientWorld,
@@ -69,13 +68,12 @@ public class SimpleBlockTab extends Tab {
         if (InventoryTabs.getConfig().doSightChecksFlag) {
             if (BlockUtil.getLineOfSight(blockPos, player, 5D) == null) {
                 return true;
+            } else {
+                return !BlockUtil.inRange(blockPos, player, 5D);
             }
         }
 
-        Vec3d playerHead = player.getPos().add(0D, player.getEyeHeight(player.getPose()), 0D);
-
-        return getBlockVec3d().subtract(playerHead).lengthSquared() > BlockTabProvider.SEARCH_DISTANCE
-                * BlockTabProvider.SEARCH_DISTANCE;
+        return false;
     }
 
     @Override
@@ -94,10 +92,7 @@ public class SimpleBlockTab extends Tab {
         }
 
         return new TranslatableText(world.getBlockState(blockPos).getBlock().getTranslationKey());
-    }
 
-    private Vec3d getBlockVec3d() {
-        return new Vec3d(blockPos.getX() + 0.5D, blockPos.getY() + 0.5D, blockPos.getZ() + 0.5D);
     }
 
     @Override
