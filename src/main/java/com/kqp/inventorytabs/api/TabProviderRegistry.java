@@ -6,12 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.kqp.inventorytabs.init.InventoryTabs;
-import com.kqp.inventorytabs.tabs.provider.ChestTabProvider;
-import com.kqp.inventorytabs.tabs.provider.EnderChestTabProvider;
-import com.kqp.inventorytabs.tabs.provider.PlayerInventoryTabProvider;
-import com.kqp.inventorytabs.tabs.provider.ShulkerBoxTabProvider;
-import com.kqp.inventorytabs.tabs.provider.SimpleBlockTabProvider;
-import com.kqp.inventorytabs.tabs.provider.TabProvider;
+import com.kqp.inventorytabs.tabs.provider.*;
 
 import net.minecraft.block.AnvilBlock;
 import net.minecraft.block.Block;
@@ -35,6 +30,8 @@ public class TabProviderRegistry {
             InventoryTabs.id("ender_chest_tab_provider"), new EnderChestTabProvider());
     public static final ShulkerBoxTabProvider SHULKER_BOX_TAB_PROVIDER = (ShulkerBoxTabProvider) register(
             InventoryTabs.id("shulker_box_tab_provider"), new ShulkerBoxTabProvider());
+    public static final CraftingTableTabProvider CRAFTING_TABLE_TAB_PROVIDER = (CraftingTableTabProvider) register(
+            InventoryTabs.id("crafting_table_tab_provider"), new CraftingTableTabProvider());
 
     public static void init() {
         addVanillaSimpleBlockTabProviders();
@@ -45,7 +42,6 @@ public class TabProviderRegistry {
     private static void addVanillaSimpleBlockTabProviders() {
         registerSimpleBlock(Blocks.FURNACE);
         registerSimpleBlock(Blocks.CARTOGRAPHY_TABLE);
-        registerSimpleBlock(Blocks.CRAFTING_TABLE);
         registerSimpleBlock(Blocks.ENCHANTING_TABLE);
         registerSimpleBlock(Blocks.GRINDSTONE);
         registerSimpleBlock(Blocks.LOOM);
