@@ -32,6 +32,9 @@ public class TabProviderRegistry {
             InventoryTabs.id("shulker_box_tab_provider"), new ShulkerBoxTabProvider());
     public static final CraftingTableTabProvider CRAFTING_TABLE_TAB_PROVIDER = (CraftingTableTabProvider) register(
             InventoryTabs.id("crafting_table_tab_provider"), new CraftingTableTabProvider());
+    public static final LecternTabProvider LECTERN_TAB_PROVIDER = (LecternTabProvider) register(
+            InventoryTabs.id("lectern_tab_provider"), new LecternTabProvider());
+
 
     public static void init() {
         addVanillaSimpleBlockTabProviders();
@@ -54,6 +57,7 @@ public class TabProviderRegistry {
         registerSimpleBlock(Blocks.DISPENSER);
         registerSimpleBlock(Blocks.DROPPER);
         registerSimpleBlock(Blocks.HOPPER);
+        registerSimpleBlock(Blocks.LECTERN);
 
         Registry.BLOCK.forEach(block -> {
             if (block instanceof AnvilBlock) {
