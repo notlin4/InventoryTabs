@@ -3,6 +3,7 @@ package com.kqp.inventorytabs.tabs.tab;
 import java.util.Objects;
 
 import com.kqp.inventorytabs.init.InventoryTabs;
+import com.kqp.inventorytabs.tabs.provider.BlockTabProvider;
 import com.kqp.inventorytabs.util.BlockUtil;
 
 import net.minecraft.block.entity.BlockEntity;
@@ -72,8 +73,11 @@ public class SimpleBlockTab extends Tab {
                 return !BlockUtil.inRange(blockPos, player, 5D);
             }
         }
+        Vec3d playerHead = player.getPos().add(0D, player.getEyeHeight(player.getPose()), 0D);
 
-        return false;
+        return Vec3d.ofCenter(blockPos).subtract(playerHead).lengthSquared() > BlockTabProvider.SEARCH_DISTANCE
+                * BlockTabProvider.SEARCH_DISTANCE;
+
     }
 
     @Override
