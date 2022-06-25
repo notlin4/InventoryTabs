@@ -209,6 +209,9 @@ public class TabManager {
         int index = tabs.indexOf(tab);
         if(FabricLoader.getInstance().isModLoaded("biginv")) {
             return index / (getMaxRowLength() * 2 + 5);
+        } else if(FabricLoader.getInstance().isModLoaded("playerex")) {
+            //System.out.println("getMaxRowLength() = " + getMaxRowLength() + ", getMaxRowLength() * 2 - 3 = " + (getMaxRowLength() * 2 - 3));
+            return index / (getMaxRowLength() * 2 - 2);
         } else {
             return index / (getMaxRowLength() * 2);
         }
@@ -230,7 +233,11 @@ public class TabManager {
     }
 
     public void setCurrentPage(int page) {
-        if (page > 0 && tabs.size() < getMaxRowLength() * 2) {
+        int maxRowLength = getMaxRowLength() * 2;
+        if (FabricLoader.getInstance().isModLoaded("playerex")) {
+            maxRowLength =- 3;
+        }
+        if (page > 0 && tabs.size() < maxRowLength) {
             System.err.println("Not enough tabs to paginate, ignoring");
 
             return;
@@ -256,6 +263,8 @@ public class TabManager {
     public int getMaxPages() {
         if(FabricLoader.getInstance().isModLoaded("biginv")) {
             return tabs.size() / (getMaxRowLength() * 2 + 6);
+        } else if(FabricLoader.getInstance().isModLoaded("playerex")) {
+            return tabs.size() / (getMaxRowLength() * 2 - 3);
         } else {
             return tabs.size() / (getMaxRowLength() * 2 + 1);
         }

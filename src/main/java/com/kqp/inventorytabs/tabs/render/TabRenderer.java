@@ -176,6 +176,8 @@ public class TabRenderer {
         int numVisibleTabs;
         if(FabricLoader.getInstance().isModLoaded("biginv")) {
             numVisibleTabs = (maxRowLength * 2) + 5;
+        } else if (FabricLoader.getInstance().isModLoaded("playerex")) {
+            numVisibleTabs = (maxRowLength * 2) - 3;
         } else {
             numVisibleTabs = maxRowLength * 2;
         }
@@ -191,6 +193,9 @@ public class TabRenderer {
                 // Setup basic info
                 Tab tab = tabManager.tabs.get(startingIndex + i);
                 boolean topRow = i < maxRowLength;
+                if(FabricLoader.getInstance().isModLoaded("playerex")) {
+                    topRow = i < maxRowLength - 3;
+                }
                 boolean selected = tab == tabManager.currentTab;
 
                 // Create tab info object
@@ -257,14 +262,22 @@ public class TabRenderer {
                 // Apply rendering hints
                 if (currentScreen instanceof TabRenderingHints) {
                     if (topRow) {
-                        tabInfo.x += ((TabRenderingHints) currentScreen).getTopRowXOffset();
+                        if(FabricLoader.getInstance().isModLoaded("playerex")) {
+                            tabInfo.x += ((TabRenderingHints) currentScreen).getTopRowXOffset() + 87;
+                            tabInfo.itemX += ((TabRenderingHints) currentScreen).getTopRowXOffset() + 87;
+                        } else {
+                            tabInfo.x += ((TabRenderingHints) currentScreen).getTopRowXOffset();
+                            tabInfo.itemX += ((TabRenderingHints) currentScreen).getTopRowXOffset();
+                        }
                         tabInfo.y += ((TabRenderingHints) currentScreen).getTopRowYOffset();
-                        tabInfo.itemX += ((TabRenderingHints) currentScreen).getTopRowXOffset();
                         tabInfo.itemY += ((TabRenderingHints) currentScreen).getTopRowYOffset();
                     } else {
                         if(FabricLoader.getInstance().isModLoaded("biginv")) {
                             tabInfo.x += ((TabRenderingHints) currentScreen).getBottomRowXOffset() - 145;
                             tabInfo.itemX += ((TabRenderingHints) currentScreen).getBottomRowXOffset() - 145;
+                        } else if(FabricLoader.getInstance().isModLoaded("playerex")) {
+                            tabInfo.x += ((TabRenderingHints) currentScreen).getBottomRowXOffset() + 86;
+                            tabInfo.itemX += ((TabRenderingHints) currentScreen).getBottomRowXOffset() + 86;
                         } else {
                             tabInfo.x += ((TabRenderingHints) currentScreen).getBottomRowXOffset();
                             tabInfo.itemX += ((TabRenderingHints) currentScreen).getBottomRowXOffset();
