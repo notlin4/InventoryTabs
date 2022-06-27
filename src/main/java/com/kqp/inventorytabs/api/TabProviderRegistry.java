@@ -9,6 +9,7 @@ import com.kqp.inventorytabs.init.InventoryTabs;
 import com.kqp.inventorytabs.tabs.provider.*;
 
 import net.minecraft.block.*;
+import net.minecraft.item.Item;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
@@ -32,6 +33,8 @@ public class TabProviderRegistry {
     //        InventoryTabs.id("crafting_table_tab_provider"), new CraftingTableTabProvider());
     public static final LecternTabProvider LECTERN_TAB_PROVIDER = (LecternTabProvider) register(
             InventoryTabs.id("lectern_tab_provider"), new LecternTabProvider());
+    public static final InventoryTabProvider INVENTORY_TAB_PROVIDER = (InventoryTabProvider) register(
+            InventoryTabs.id("inventory_tab_provider"), new InventoryTabProvider());
 
 
     public static void init() {
@@ -47,6 +50,19 @@ public class TabProviderRegistry {
             }
         });
         modCompatRemove();
+        modCompatAdd();
+    }
+
+    private static void modCompatAdd() {
+        registerInventoryTab(new Identifier("onastick", "crafting_table_on_a_stick"));
+        registerInventoryTab(new Identifier("onastick", "smithing_table_on_a_stick"));
+        registerInventoryTab(new Identifier("onastick", "cartography_table_on_a_stick"));
+        registerInventoryTab(new Identifier("onastick", "anvil_on_a_stick"));
+        registerInventoryTab(new Identifier("onastick", "loom_on_a_stick"));
+        registerInventoryTab(new Identifier("onastick", "grindstone_on_a_stick"));
+        registerInventoryTab(new Identifier("onastick", "stonecutter_on_a_stick"));
+
+        registerInventoryTab(new Identifier("craftingpad", "craftingpad"));
     }
 
     private static void modCompatRemove() {
@@ -81,6 +97,10 @@ public class TabProviderRegistry {
         removeSimpleBlock(new Identifier("techreborn", "lamp_led"));
         removeSimpleBlock(new Identifier("techreborn", "computer_cube"));
 
+    }
+
+    public static void registerInventoryTab(Identifier itemId) {
+        INVENTORY_TAB_PROVIDER.addItem(itemId);
     }
 
     /**
