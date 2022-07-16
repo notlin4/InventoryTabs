@@ -28,8 +28,8 @@ public class TabProviderRegistry {
             InventoryTabs.id("ender_chest_tab_provider"), new EnderChestTabProvider());
     public static final ShulkerBoxTabProvider SHULKER_BOX_TAB_PROVIDER = (ShulkerBoxTabProvider) register(
             InventoryTabs.id("shulker_box_tab_provider"), new ShulkerBoxTabProvider());
-    //public static final CraftingTableTabProvider CRAFTING_TABLE_TAB_PROVIDER = (CraftingTableTabProvider) register(
-    //        InventoryTabs.id("crafting_table_tab_provider"), new CraftingTableTabProvider());
+    public static final CraftingTableTabProvider CRAFTING_TABLE_TAB_PROVIDER = (CraftingTableTabProvider) register(
+            InventoryTabs.id("crafting_table_tab_provider"), new CraftingTableTabProvider());
     public static final LecternTabProvider LECTERN_TAB_PROVIDER = (LecternTabProvider) register(
             InventoryTabs.id("lectern_tab_provider"), new LecternTabProvider());
     public static final InventoryTabProvider INVENTORY_TAB_PROVIDER = (InventoryTabProvider) register(
@@ -46,7 +46,7 @@ public class TabProviderRegistry {
             if (block instanceof BlockEntityProvider) {
                 if (block instanceof AbstractChestBlock) {
                     registerChest(block);
-                } else if (!(block instanceof AbstractBannerBlock) && !(block instanceof AbstractSignBlock) && !(block instanceof AbstractSkullBlock) && !(block instanceof BeehiveBlock) && !(block instanceof BellBlock) && !(block instanceof CampfireBlock) && !(block instanceof ConduitBlock) && !(block instanceof DaylightDetectorBlock) && !(block instanceof EndGatewayBlock) && !(block instanceof EndPortalBlock) && !(block instanceof JukeboxBlock) && !(block instanceof PistonExtensionBlock) && !(block instanceof SculkSensorBlock) && !(block instanceof SpawnerBlock)) {
+                } else if (!(block instanceof AbstractBannerBlock) && !(block instanceof AbstractSignBlock) && !(block instanceof AbstractSkullBlock) && !(block instanceof BeehiveBlock) && !(block instanceof BedBlock) && !(block instanceof BellBlock) && !(block instanceof CampfireBlock) && !(block instanceof ConduitBlock) && !(block instanceof DaylightDetectorBlock) && !(block instanceof EndGatewayBlock) && !(block instanceof EndPortalBlock) && !(block instanceof JukeboxBlock) && !(block instanceof PistonExtensionBlock) && !(block instanceof SculkSensorBlock) && !(block instanceof SpawnerBlock)) {
                     registerSimpleBlock(block);
                 }
             } else if ((block instanceof CraftingTableBlock && !(block instanceof FletchingTableBlock)) || block instanceof AnvilBlock || block instanceof CartographyTableBlock || block instanceof GrindstoneBlock || block instanceof LoomBlock || block instanceof StonecutterBlock) {
