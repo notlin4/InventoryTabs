@@ -3,13 +3,18 @@ package com.kqp.inventorytabs.api;
 import java.util.*;
 
 import com.kqp.inventorytabs.init.InventoryTabs;
+import com.kqp.inventorytabs.interf.TabManagerContainer;
 import com.kqp.inventorytabs.tabs.provider.*;
 
 import net.minecraft.block.*;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.tag.TagKey;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import static net.minecraft.util.registry.Registry.BLOCK_KEY;
 
 /**
  * Registry for tab providers.
@@ -38,9 +43,18 @@ public class TabProviderRegistry {
 
     public static void init(String configMsg) {
         LOGGER.info("InventoryTabs: Attempting to "+configMsg+" config...");
-        Set<String> invalidSet = new HashSet<>();
         if (InventoryTabs.getConfig().debugEnabled) {
             LOGGER.warn("InventoryTabs: DEBUG ENABLED");
+        }
+        Set<String> invalidSet = new HashSet<>();
+        Set<String> tagSet = new HashSet<>();
+        Set<String> blockSet = new HashSet<>();
+        for (String overrideEntry : InventoryTabs.getConfig().excludeTab) {
+            if (overrideEntry.startsWith("#")) {
+                tagSet.add(overrideEntry.trim().substring(1));
+            } else {
+                blockSet.add(overrideEntry);
+            }
         }
         Registry.BLOCK.forEach(block -> {
             if (block instanceof BlockEntityProvider) {
@@ -52,10 +66,14 @@ public class TabProviderRegistry {
             } else if ((block instanceof CraftingTableBlock && !(block instanceof FletchingTableBlock)) || block instanceof AnvilBlock || block instanceof CartographyTableBlock || block instanceof GrindstoneBlock || block instanceof LoomBlock || block instanceof StonecutterBlock) {
                 registerSimpleBlock(block);
             }
+            configRemove(block, tagSet, invalidSet);
         });
-        configRemove();
+        configRemove(blockSet);
         configAdd();
-        //modCompatAdd();
+
+        MinecraftClient client = MinecraftClient.getInstance();
+        TabManagerContainer tabManagerContainer = (TabManagerContainer) client;
+        tabManagerContainer.getTabManager().removeTabs();
         LOGGER.info(configMsg.equals("save") ? "InventoryTabs: Config saved!": "InventoryTabs: Config "+configMsg+"ed!");
     }
 
@@ -67,18 +85,40 @@ public class TabProviderRegistry {
         registerInventoryTab(new Identifier("onastick", "loom_on_a_stick"));
         registerInventoryTab(new Identifier("onastick", "grindstone_on_a_stick"));
         registerInventoryTab(new Identifier("onastick", "stonecutter_on_a_stick"));
-
         registerInventoryTab(new Identifier("craftingpad", "craftingpad"));
     }
-
-    private static void configRemove() {
-        for (String excluded_tab : InventoryTabs.getConfig().excludeTab) {
+    public static boolean isValid(String overrideEntry, String[] splitEntry, Set<String> invalidSet) {
+        if (splitEntry.length != 2) {
+            invalidSet.add(overrideEntry);
+            return false;
+        }
+        return true;
+    }
+    private static void configRemove(Set<String> blockSet) {
+        for (String overrideEntry : blockSet) {
             if (InventoryTabs.getConfig().debugEnabled) {
-                LOGGER.info("Excluding: " + excluded_tab);
+                LOGGER.info("Excluding: " + overrideEntry);
             }
-            removeSimpleBlock(new Identifier(excluded_tab));
+            removeSimpleBlock(new Identifier(overrideEntry));
         }
     }
+    private static void configRemove(Block block, Set<String> tagSet, Set<String> invalidSet) {
+        for (String overrideEntry : tagSet) {
+            String[] splitEntry = overrideEntry.split(":"); // split into two parts: tag id, item name
+            if (isValid(overrideEntry, splitEntry, invalidSet)) {
+                List<TagKey<Block>> blockStream = block.getRegistryEntry().streamTags().toList();
+                for (TagKey<Block> tagKey : blockStream) {
+                    if (block.getRegistryEntry().isIn(TagKey.of(BLOCK_KEY, new Identifier(splitEntry[0], splitEntry[1])))) {
+                        removeSimpleBlock(block);
+                        if (InventoryTabs.getConfig().debugEnabled) {
+                            LOGGER.info("Excluding: " + block);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     private static void configAdd() {
         for (String included_tab : InventoryTabs.getConfig().includeTab) {
             if (InventoryTabs.getConfig().debugEnabled) {
