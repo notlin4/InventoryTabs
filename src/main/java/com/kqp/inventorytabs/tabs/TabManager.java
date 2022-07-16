@@ -30,13 +30,13 @@ import net.minecraft.network.packet.c2s.play.CloseHandledScreenC2SPacket;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.sound.SoundEvents;
 
+import static com.kqp.inventorytabs.init.InventoryTabs.*;
+
 /**
  * Manages everything related to tabs.
  */
 @Environment(EnvType.CLIENT)
 public class TabManager {
-    public final boolean isBigInvLoaded = FabricLoader.getInstance().isModLoaded("biginv");
-    public final boolean isPlayerExLoaded = FabricLoader.getInstance().isModLoaded("playerex");
     public final List<Tab> tabs;
     public Tab currentTab;
 

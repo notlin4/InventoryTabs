@@ -17,13 +17,13 @@ import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
 
+import static com.kqp.inventorytabs.init.InventoryTabs.*;
+
 /**
  * Handles the rendering of tabs.
  */
 @Environment(EnvType.CLIENT)
 public class TabRenderer {
-    public static final boolean isBigInvLoaded = FabricLoader.getInstance().isModLoaded("biginv");
-    public static final boolean isPlayerExLoaded = FabricLoader.getInstance().isModLoaded("playerex");
     private static final Identifier TABS_TEXTURE = new Identifier("textures/gui/container/creative_inventory/tabs.png");
     private static final Identifier BUTTONS_TEXTURE = InventoryTabs.id("textures/gui/buttons.png");
 
