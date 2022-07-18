@@ -17,7 +17,8 @@ public class InventoryTabsConfig implements ConfigData {
     @ConfigEntry.Gui.Tooltip
     public List<String> excludeTab = Arrays.asList(
             "tiered:reforging_station",
-            "#techreborn:block_entities_without_inventories"
+            "#techreborn:block_entities_without_inventories",
+            "#inventorytabs:mod_compat_blacklist"
     );
 
     @ConfigEntry.Gui.Tooltip

@@ -1,5 +1,8 @@
 package com.kqp.inventorytabs.api;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.*;
 
 import com.kqp.inventorytabs.init.InventoryTabs;
@@ -33,13 +36,30 @@ public class TabProviderRegistry {
             InventoryTabs.id("ender_chest_tab_provider"), new EnderChestTabProvider());
     public static final ShulkerBoxTabProvider SHULKER_BOX_TAB_PROVIDER = (ShulkerBoxTabProvider) register(
             InventoryTabs.id("shulker_box_tab_provider"), new ShulkerBoxTabProvider());
-    public static final CraftingTableTabProvider CRAFTING_TABLE_TAB_PROVIDER = (CraftingTableTabProvider) register(
-            InventoryTabs.id("crafting_table_tab_provider"), new CraftingTableTabProvider());
+    public static final UniqueTabProvider UNIQUE_TAB_PROVIDER = (UniqueTabProvider) register(
+            InventoryTabs.id("crafting_table_tab_provider"), new UniqueTabProvider());
     public static final LecternTabProvider LECTERN_TAB_PROVIDER = (LecternTabProvider) register(
             InventoryTabs.id("lectern_tab_provider"), new LecternTabProvider());
     public static final InventoryTabProvider INVENTORY_TAB_PROVIDER = (InventoryTabProvider) register(
             InventoryTabs.id("inventory_tab_provider"), new InventoryTabProvider());
 
+
+    // the following function was modified from https://stackoverflow.com/a/69491584/18486656
+    /*
+    public static String[] getAccessibleMethods(Class clazz) {
+        List<String> result = new ArrayList<>();
+        while (clazz != null) {
+            for (Method method : clazz.getDeclaredMethods()) {
+                int modifiers = method.getModifiers();
+                if (Modifier.isPublic(modifiers) || Modifier.isProtected(modifiers)) {
+                    result.add(method.toString());
+                }
+            }
+            clazz = clazz.getSuperclass();
+        }
+        System.out.println(clazz);
+        return result.toArray(new String[result.size()]);
+    }*/
 
     public static void init(String configMsg) {
         LOGGER.info("InventoryTabs: Attempting to "+configMsg+" config...");
@@ -56,15 +76,36 @@ public class TabProviderRegistry {
                 blockSet.add(overrideEntry);
             }
         }
+        /*
+        Registry.BLOCK.forEach(block -> {
+            if (block instanceof AbstractChestBlock) {
+                registerChest(block);
+            } else {
+                Field[] fields = block.getClass().getFields();
+                for (Field field : fields) {
+                    System.out.println(block.getClass()+", "+field.getType());
+                }
+                //System.out.println(block.getClass()+", "+ Arrays.toString(fields));
+                //System.out.println(block+", "+ Arrays.toString(getAccessibleMethods(block.getClass())));
+                //if (Arrays.stream(getAccessibleMethods(block.getClass())).filter(string -> string.contains("screen")).toArray(String[]::new).length > 0) {
+                //    System.out.println("Found screen method on block " + block);
+                //    registerSimpleBlock(block);
+                //}
+            }
+            configRemove(block, tagSet, invalidSet);
+        });
+        */
+
+
         Registry.BLOCK.forEach(block -> {
             if (block instanceof BlockEntityProvider) {
                 if (block instanceof AbstractChestBlock) {
                     registerChest(block);
-                } else if (!(block instanceof AbstractBannerBlock) && !(block instanceof AbstractSignBlock) && !(block instanceof AbstractSkullBlock) && !(block instanceof BeehiveBlock) && !(block instanceof BedBlock) && !(block instanceof BellBlock) && !(block instanceof CampfireBlock) && !(block instanceof ConduitBlock) && !(block instanceof DaylightDetectorBlock) && !(block instanceof EndGatewayBlock) && !(block instanceof EndPortalBlock) && !(block instanceof JukeboxBlock) && !(block instanceof PistonExtensionBlock) && !(block instanceof SculkSensorBlock) && !(block instanceof SpawnerBlock)) {
+                } else if (!(block instanceof AbstractBannerBlock) && !(block instanceof AbstractSignBlock) && !(block instanceof AbstractSkullBlock) && !(block instanceof BeehiveBlock) && !(block instanceof BedBlock) && !(block instanceof BellBlock) && !(block instanceof CampfireBlock) && !(block instanceof ComparatorBlock) && !(block instanceof ConduitBlock) && !(block instanceof DaylightDetectorBlock) && !(block instanceof EndGatewayBlock) && !(block instanceof EndPortalBlock) && !(block instanceof JukeboxBlock) && !(block instanceof PistonExtensionBlock) && !(block instanceof SculkSensorBlock) && !(block instanceof SpawnerBlock)) {
                     registerSimpleBlock(block);
                 }
-            } else if ((block instanceof CraftingTableBlock && !(block instanceof FletchingTableBlock)) || block instanceof AnvilBlock || block instanceof CartographyTableBlock || block instanceof GrindstoneBlock || block instanceof LoomBlock || block instanceof StonecutterBlock) {
-                registerSimpleBlock(block);
+            } else if (block instanceof CraftingTableBlock && !(block instanceof FletchingTableBlock) || block instanceof AnvilBlock || block instanceof CartographyTableBlock || block instanceof GrindstoneBlock || block instanceof LoomBlock || block instanceof StonecutterBlock) {
+                registerUniqueBlock(block);
             }
             configRemove(block, tagSet, invalidSet);
         });
@@ -168,7 +209,17 @@ public class TabProviderRegistry {
      * @param block
      */
     public static void registerChest(Block block) {
+        if (InventoryTabs.getConfig().debugEnabled) {
+            LOGGER.info("Registering: " + block);
+        }
         CHEST_TAB_PROVIDER.addChestBlock(block);
+    }
+
+    public static void registerUniqueBlock(Block block) {
+        if (InventoryTabs.getConfig().debugEnabled) {
+            LOGGER.info("Registering: " + block);
+        }
+        UNIQUE_TAB_PROVIDER.addUniqueBlock(block);
     }
 
     /**

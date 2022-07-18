@@ -3,7 +3,7 @@
   "values": [
     {"id": "techreborn:basic_machine_casing", "required": false},
     {"id": "techreborn:advanced_machine_casing", "required": false},
-    {"id": "techreborn:industrial_machine_casin", "required": false},
+    {"id": "techreborn:industrial_machine_casing", "required": false},
     {"id": "techreborn:creative_solar_panel", "required": false},
     {"id": "techreborn:copper_cable", "required": false},
     {"id": "techreborn:tin_cable", "required": false},

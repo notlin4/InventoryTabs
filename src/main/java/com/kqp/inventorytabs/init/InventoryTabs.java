@@ -6,10 +6,16 @@ import me.shedaniel.autoconfig.ConfigHolder;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 import me.shedaniel.autoconfig.serializer.JanksonConfigSerializer;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
+import net.fabricmc.fabric.api.client.networking.v1.ClientLoginConnectionEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Identifier;
+
+import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class InventoryTabs implements ModInitializer {
     public static final String ID = "inventorytabs";
@@ -29,7 +35,7 @@ public class InventoryTabs implements ModInitializer {
             TabProviderRegistry.init("save");
             return ActionResult.success(true);
         });
-        ServerLifecycleEvents.SERVER_STARTED.register(server -> TabProviderRegistry.init("load"));
+        ClientLoginConnectionEvents.INIT.register((handler, client) -> TabProviderRegistry.init("load"));
         ServerLifecycleEvents.END_DATA_PACK_RELOAD.register((server, resourceManager, success) -> TabProviderRegistry.init("reload"));
 
         isBigInvLoaded = FabricLoader.getInstance().isModLoaded("biginv");
