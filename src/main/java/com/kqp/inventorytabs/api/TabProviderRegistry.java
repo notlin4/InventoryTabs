@@ -1,8 +1,5 @@
 package com.kqp.inventorytabs.api;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.util.*;
 
 import com.kqp.inventorytabs.init.InventoryTabs;
@@ -11,6 +8,9 @@ import com.kqp.inventorytabs.tabs.provider.*;
 
 import net.minecraft.block.*;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.vehicle.ChestMinecartEntity;
 import net.minecraft.tag.TagKey;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
@@ -28,6 +28,8 @@ public class TabProviderRegistry {
 
     public static final PlayerInventoryTabProvider PLAYER_INVENTORY_TAB_PROVIDER = (PlayerInventoryTabProvider) register(
             InventoryTabs.id("player_inventory_tab_provider"), new PlayerInventoryTabProvider());
+    public static final SimpleEntityTabProvider ENTITY_TAB_PROVIDER = (SimpleEntityTabProvider) register(
+            InventoryTabs.id("entity_tab_provider"), new SimpleEntityTabProvider());
     public static final SimpleBlockTabProvider SIMPLE_BLOCK_TAB_PROVIDER = (SimpleBlockTabProvider) register(
             InventoryTabs.id("simple_block_tab_provider"), new SimpleBlockTabProvider());
     public static final ChestTabProvider CHEST_TAB_PROVIDER = (ChestTabProvider) register(
@@ -42,24 +44,6 @@ public class TabProviderRegistry {
             InventoryTabs.id("lectern_tab_provider"), new LecternTabProvider());
     public static final InventoryTabProvider INVENTORY_TAB_PROVIDER = (InventoryTabProvider) register(
             InventoryTabs.id("inventory_tab_provider"), new InventoryTabProvider());
-
-
-    // the following function was modified from https://stackoverflow.com/a/69491584/18486656
-    /*
-    public static String[] getAccessibleMethods(Class clazz) {
-        List<String> result = new ArrayList<>();
-        while (clazz != null) {
-            for (Method method : clazz.getDeclaredMethods()) {
-                int modifiers = method.getModifiers();
-                if (Modifier.isPublic(modifiers) || Modifier.isProtected(modifiers)) {
-                    result.add(method.toString());
-                }
-            }
-            clazz = clazz.getSuperclass();
-        }
-        System.out.println(clazz);
-        return result.toArray(new String[result.size()]);
-    }*/
 
     public static void init(String configMsg) {
         LOGGER.info("InventoryTabs: Attempting to "+configMsg+" config...");
@@ -76,27 +60,6 @@ public class TabProviderRegistry {
                 blockSet.add(overrideEntry);
             }
         }
-        /*
-        Registry.BLOCK.forEach(block -> {
-            if (block instanceof AbstractChestBlock) {
-                registerChest(block);
-            } else {
-                Field[] fields = block.getClass().getFields();
-                for (Field field : fields) {
-                    System.out.println(block.getClass()+", "+field.getType());
-                }
-                //System.out.println(block.getClass()+", "+ Arrays.toString(fields));
-                //System.out.println(block+", "+ Arrays.toString(getAccessibleMethods(block.getClass())));
-                //if (Arrays.stream(getAccessibleMethods(block.getClass())).filter(string -> string.contains("screen")).toArray(String[]::new).length > 0) {
-                //    System.out.println("Found screen method on block " + block);
-                //    registerSimpleBlock(block);
-                //}
-            }
-            configRemove(block, tagSet, invalidSet);
-        });
-        */
-
-
         Registry.BLOCK.forEach(block -> {
             if (block instanceof BlockEntityProvider) {
                 if (block instanceof AbstractChestBlock) {
@@ -111,6 +74,12 @@ public class TabProviderRegistry {
         });
         configRemove(blockSet);
         configAdd();
+        registerEntity(new Identifier("minecraft:entity.minecraft.chest_minecart"));
+        //Registry.ENTITY_TYPE.forEach(entityType -> {
+        //    if (EntityType.getId(entityType).equals(new Identifier("entity.minecraft.chest_minecart"))) {
+        //        registerEntity(EntityType.getId(entityType));
+        //    }
+        //});
 
         MinecraftClient client = MinecraftClient.getInstance();
         TabManagerContainer tabManagerContainer = (TabManagerContainer) client;
@@ -220,6 +189,13 @@ public class TabProviderRegistry {
             LOGGER.info("Registering: " + block);
         }
         UNIQUE_TAB_PROVIDER.addUniqueBlock(block);
+    }
+
+    public static void registerEntity(Identifier entityId) {
+        if (InventoryTabs.getConfig().debugEnabled) {
+            LOGGER.info("Registering: " + entityId);
+        }
+        ENTITY_TAB_PROVIDER.addEntity(entityId);
     }
 
     /**
