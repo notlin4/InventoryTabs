@@ -203,13 +203,12 @@ public class TabManager {
             client.getNetworkHandler()
                     .sendPacket(new CloseHandledScreenC2SPacket(client.player.currentScreenHandler.syncId));
         }
-        Tab temp = currentTab;
+        Tab oldTab = currentTab;
         // Open new tab
+        oldTab.preOpen();
         onOpenTab(tab);
         tab.open();
-        if (client.player.currentScreenHandler != null) {
-            temp.postClose(client.player.currentScreenHandler);
-        }
+        oldTab.postClose();
     }
 
     public void onOpenTab(Tab tab) {

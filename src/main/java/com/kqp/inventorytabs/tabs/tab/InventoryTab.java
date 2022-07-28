@@ -2,11 +2,13 @@ package com.kqp.inventorytabs.tabs.tab;
 
 import com.google.common.collect.ImmutableList;
 import com.kqp.inventorytabs.mixin.accessor.ClientPlayerInteractionManagerAccessor;
+import com.kqp.inventorytabs.tabs.TabManager;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
+import net.minecraft.client.gui.screen.ingame.InventoryScreen;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.ClientPlayerInteractionManager;
 import net.minecraft.entity.EquipmentSlot;
@@ -46,6 +48,12 @@ public class InventoryTab extends Tab {
         this.slotId = slotId;
         this.item = itemStack.getItem();
     }
+    @Override
+    public void preOpen() {
+        System.out.println("PRE_OPEN");
+        MinecraftClient client = MinecraftClient.getInstance();
+        client.setScreen(new InventoryScreen(client.player));
+    }
 
     @Override
     public void open() {
@@ -77,22 +85,24 @@ public class InventoryTab extends Tab {
         }
     }
     @Override
-    public void postClose(ScreenHandler oldScreenHandler) {
+    public void onClose() {
+        System.out.println("ON_CLOSE");
+        //MinecraftClient client = MinecraftClient.getInstance();
+        //client.setScreen(new InventoryScreen(client.player));
+        //TabManager.getInstance().currentTab = null;
+        //if (client.player.currentScreenHandler != null) {
+        //    client.getNetworkHandler()
+        //            .sendPacket(new CloseHandledScreenC2SPacket(client.player.currentScreenHandler.syncId));
+        //}
+    }
+    @Override
+    public void postClose() {
         System.out.println("POST_CLOSE");
         ClientPlayerEntity player = MinecraftClient.getInstance().player;
         ClientPlayerInteractionManager clientPlayerInteractionManager = MinecraftClient.getInstance().interactionManager;
         ScreenHandler currentScreenHandler = player.currentScreenHandler;
         int syncId = currentScreenHandler.syncId;
-        PlayerInventory inventory = player.getInventory();
-        int selectedSlot = inventory.selectedSlot;
-        int slot_id = inventory.getSlotWithStack(itemStack);
-
-
-
-        selectedSlot = currentScreenHandler.slots.size() - 10 + selectedSlot;
-        if (PlayerInventory.isValidHotbarIndex(slot_id)) {
-            slot_id = currentScreenHandler.slots.size() - 10 + slot_id;
-        }
+        int selectedSlot = currentScreenHandler.slots.size() - 10 + player.getInventory().selectedSlot;
 
         System.out.println("selectedSlot: " + selectedSlot+" tabSlot: " + slotId+" combinedInventory.size(): " + currentScreenHandler+", "+(currentScreenHandler.slots.size()- 10));
         if (clientPlayerInteractionManager != null) {

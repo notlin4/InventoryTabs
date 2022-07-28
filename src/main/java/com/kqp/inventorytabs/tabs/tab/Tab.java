@@ -25,6 +25,11 @@ public abstract class Tab {
     }
 
     /**
+     * Fires before the tab is clicked.
+     */
+    public void preOpen(){
+    }
+    /**
      * Fires whenever the tab is clicked.
      */
     public abstract void open();
@@ -53,7 +58,7 @@ public abstract class Tab {
     /**
      * Called after the new associated with the tab is closed.
      */
-    public void postClose(ScreenHandler currentScreenHandler) {
+    public void postClose() {
     }
 
     /**
