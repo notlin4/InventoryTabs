@@ -6,6 +6,7 @@
   "mixins": [
     "CartographyTableScreenTabAdder",
     "LoomScreenTabAdder",
+    "ServerPlayNetworkHandlerMixin",
     "ShulkerBoxBlockInvoker",
     "StonecutterScreenTabAdder",
     "TabManagerContainerImplementer",
@@ -18,6 +19,7 @@
   },
   "client": [
     "ControlsListWidget$KeyBindingEntryMixin_SoftConflict",
-    "KeyBindingMixin_SoftConflict"
+    "KeyBindingMixin_SoftConflict",
+    "accessor.ClientPlayerInteractionManagerAccessor"
   ]
 }

@@ -6,6 +6,7 @@ import com.kqp.inventorytabs.tabs.tab.PlayerInventoryTab;
 import com.kqp.inventorytabs.tabs.tab.Tab;
 import net.minecraft.block.Block;
 import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
@@ -25,10 +26,14 @@ public class InventoryTabProvider implements TabProvider {
     public void addAvailableTabs(ClientPlayerEntity player, List<Tab> tabs) {
         Set<Item> itemSet = inventoryItems.stream().map(Registry.ITEM::get).collect(Collectors.toSet());
         for (Item item : itemSet) {
-            if (player.getInventory().contains(new ItemStack(item))) {
-                Tab tab = new InventoryTab(item);
-                if (tabs.stream().filter(c -> c instanceof InventoryTab).noneMatch(c -> ((InventoryTab) c).itemId == item)) {
-                    tabs.add(tab);
+            ItemStack itemStack = new ItemStack(item);
+            PlayerInventory inventory = player.getInventory();
+            if (inventory.contains(itemStack)) {
+                Tab tab = new InventoryTab(itemStack, inventory.getSlotWithStack(itemStack));
+                if (tabs.stream().filter(c -> c instanceof InventoryTab).noneMatch(c -> ((InventoryTab) c).item == item)) {
+                    if(!tab.shouldBeRemoved()) {
+                        tabs.add(tab);
+                    }
                 }
             }
         }

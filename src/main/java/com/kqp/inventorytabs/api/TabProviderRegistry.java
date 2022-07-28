@@ -81,6 +81,7 @@ public class TabProviderRegistry {
         //    }
         //});
 
+        modCompatAdd();
         MinecraftClient client = MinecraftClient.getInstance();
         TabManagerContainer tabManagerContainer = (TabManagerContainer) client;
         tabManagerContainer.getTabManager().removeTabs();
