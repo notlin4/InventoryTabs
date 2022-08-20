@@ -19,8 +19,8 @@ public class ServerPlayNetworkHandlerMixin {
         // Check for inventory movement packet
         if(packet instanceof ClickSlotC2SPacket) {
             ClickSlotC2SPacket clickSlotPacket = (ClickSlotC2SPacket) packet;
-            //System.out.println("TESTING: Inventory movement packet"+packet);
-            System.out.println("syncId: " + clickSlotPacket.getSyncId()+", slot: " + clickSlotPacket.getSlot()+", button: " + clickSlotPacket.getButton()+", stack: " + clickSlotPacket.getStack()+", action: " + clickSlotPacket.getActionType()+", ModifiedStacks: " + clickSlotPacket.getModifiedStacks());
+            // System.out.println("TESTING: Inventory movement packet"+packet);
+            // System.out.println("syncId: " + clickSlotPacket.getSyncId()+", slot: " + clickSlotPacket.getSlot()+", button: " + clickSlotPacket.getButton()+", stack: " + clickSlotPacket.getStack()+", action: " + clickSlotPacket.getActionType()+", ModifiedStacks: " + clickSlotPacket.getModifiedStacks());
         }
     }
 }
